@@ -28,44 +28,6 @@ docs/tex/main.pdf
 
 ---
 
-## 🎒 Как запустить
-
-1. **Клонируйте репозиторий**
-
-   ```bash
-   git clone <repo-url>
-   cd ruonia-forecast
-   ```
-
-2. **Создайте окружение**
-
-   ```bash
-   conda env create -f environment.yml
-   conda activate ruonia-forecast
-   ```
-
-3. **(Опционально)**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Проверьте, что всё установлено**
-
-   ```bash
-   python -c "import pandas, requests, pyarrow; print('OK')"
-   ```
-
-5. **Запустите JupyterLab**
-
-   ```bash
-   jupyter lab
-   ```
-
-   Выберите kernel `ruonia-forecast`.
-
----
-
 ## 📈 Exploratory Data Analysis
 
 Ноутбук с EDA:
