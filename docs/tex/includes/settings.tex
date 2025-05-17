@@ -1,15 +1,25 @@
-% !TeX root = ../main.tex
 \usepackage[a4paper,margin=25mm]{geometry}
-
 \usepackage{fontspec}
-\setmainfont{Times New Roman}
+  \setmainfont{Times New Roman}
+  \newfontfamily\russianfont{Times New Roman}
+\setmonofont{Menlo}             
+\newfontfamily\cyrillicfonttt{Menlo} 
 \usepackage{polyglossia}
-\setdefaultlanguage{english}
-\setotherlanguage{russian}
-
-\usepackage{graphicx,amsmath,amssymb,booktabs}
+\setdefaultlanguage{russian}
+\setotherlanguage{english, russian}
+\usepackage{setspace} 
+\onehalfspacing 
+\usepackage{graphicx,amsmath,amssymb,booktabs, bm}
 \usepackage{minted}
 \usepackage[hidelinks]{hyperref}
-
-% если нужен библиографический движок — позже подключите:
-% \usepackage[backend=biber,style=authoryear]{biblatex}
+\usepackage[
+  backend=biber,
+  style=numeric-comp,  
+  sorting=none,         
+  maxnames=2,           
+  isbn=false
+]{biblatex}
+\addbibresource{/Users/dmlast/Documents/Projects/ruonia-forecast/docs/bib/references.bib}
+\renewcommand*{\bibfont}{\small}
+\usepackage{siunitx}
+\usepackage{ragged2e}

@@ -1,0 +1,192 @@
+\section{Введение}
+\subsection*{Зачем этот раздел}     
+Сначала мы представим краткие определения ключевых ставок и метрик для более прозрачной методологии. 
+Это позволит уточнить, какие именно величины мы намерены прогнозировать 
+и какие критерии точности будут использованы. 
+Вслед за этим будет изложена мотивация прогнозирования
+\textsc{ruonia} и возможный спектр методов.
+
+\subsection{Словарь ключевых понятий}
+
+\textbf{RUONIA}\footnote{Russian Overnight Index Average. Методика — \autocite{cbr_method2024}.} —
+средневзвешенная ставка по необеспеченным межбанковским займам на один
+день (\emph{overnight}). Банк России собирает сделки, считает
+взвешенное среднее и публикует его на следующий рабочий день. Это
+единственный публичный индикатор того, «сколько сейчас действительно стоит рубль
+на межбанковском рынке».
+
+\textbf{Овернайт-ставки ARR}:  
+SOFR (США), SONIA (Британия), €STR (Евро) появились после
+отказа от LIBOR в 2021г. \autocite{arrc2021}. Их объединяет ежедневная
+публикация и использование как базовой ставки по деривативам.
+
+\textbf{Базис-пойнт (bp)} — одна сотая процента, $1\,\text{bp}=0.01\%$.
+
+\textbf{Волатильность} —
+\[
+\sigma_t^{2}= \operatorname{Var}\bigl(\Delta r_{t+1}\mid\mathcal F_t\bigr)
+\]
+
+где $\mathcal F_t$ — «всё, что мы знаем сегодня»: прошлые значения
+RUONIA, ключевой ставки, курс USD/RUB, индексы ликвидности и т.д. 
+Может браться также стандартное отклонение или логарифм стандартного отклонения.
+
+\textbf{VaR\,$_{99}$} — такое $q$, что однодневный убыток портфеля
+превысит $q$ не чаще 1 \% случаев. Регулятор требует бэктест
+на последних 250 дней и штрафует, если нарушений слишком много
+\autocite{basel2023}.
+
+\subsection{Почему прогноз RUONIA интересен для ML}
+
+Точность прогноза overnight-ставки на $\pm5$ bp уже экономит сотни тысяч долларов в день
+на портфеле \SI{1e9}{RUB} O/N-свопов
+\autocite{duffie2023onn}.  В России для прогнозирования RUONIA традиционно применяют сочетание:
+
+\begin{itemize}
+  \item \textbf{Модель Васичека}:  
+    однопараметрическое СДУ
+    \[
+      \mathrm{d}r_t = \kappa(\theta - r_t)\,\mathrm{d}t + \sigma\,\mathrm{d}W_t,
+    \]
+    где 
+    \(\kappa\) — скорость возврата к среднему \(\theta\), 
+    \(\sigma\) — амплитуда случайных флуктуаций, 
+    \(W_t\) — винеровский процесс.  
+    Оно даёт явную формулу для условного среднего
+    \(\displaystyle \mathbb{E}[r_{t+h}\mid \mathcal F_t] = \theta + (r_t-\theta)e^{-\kappa h}\),
+    но не оценивает распределение и реагирует на шоки плавно.
+  \item \textbf{EWMA-волатильность}:  
+    экспоненциально взвешенная скользящая оценка дисперсии
+    \[
+      \sigma_t^2 = \lambda\,\sigma_{t-1}^2 + (1-\lambda)\,\bigl(r_t - r_{t-1}\bigr)^2,
+      \quad \lambda\in(0,1).
+    \]
+    В стандарте Basel II обычно берут \(\lambda=0.94\).  
+    Метод прост в реализации, но «запаздывает» при резких изменениях:
+    крупный скачок волатильности долго «расплывается» по окну.
+\end{itemize}
+
+Эти подходы дают только точечный прогноз среднего и сглаженную
+волатильность, но слабо реагируют на внезапные изменения колебаний, к примеру,
+после неожиданных заявлений Центробанка, что снижает точность оценки
+рисков.  
+
+
+\subsection{Актуальные результаты и мотивация}
+
+За последние два года вышла серия статей, показывающих, что
+\emph{вероятностные} и \emph{генеративные} модели задают новый
+бенчмарк для прогнозов o/n-ставок (SOFR, €STR, SONIA):
+
+\begin{itemize}
+  \item \textbf{DeepAR / DeepState}.  Выигрыш до 25 \% по CRPS и
+        Pinball-loss против ARIMA для SOFR \autocite{salinas2020deepar}.
+  \item \textbf{TFT + Quantile Loss}.  Интервалы 5–95 \%, стресс-сценарии
+         \autocite{lim2024tft,vaswani2024transformers}.
+  \item \textbf{Normalizing Flows \& Diffusion Models}.  Улучшение
+        VaR~(99 \%) на 30 \% относительно GARCH
+        \autocite{rasouli2023flows,zangeneh2024diffusion,xu2024deep}.
+  \item \textbf{Bayesian non-parametrics}.  Гибкая аппроксимация
+        условной плотности без заданного семейства
+        \autocite{alvarez2024bayesian}.
+  \item \textbf{Quantile Regression Forests \& GNN}.  Дешёвые в
+        обучении распределённые прогнозы и учёт сетевой структуры
+        рынков \autocite{liu2024robust,hayashi2024graphnets}.
+  \item \textbf{Large-Language / Multimodal models}.  Учёт новостей
+        ФРС и текстовых факторов снижает ES-backtest
+        \autocite{gao2024fedspeak,silva2024multimodal,chang2024forecasting}.
+\end{itemize}
+
+Для \textsc{ruonia} подобного анализа нет.  
+Мы хотим построить \emph{полное} распределение
+\(P(r_{t+h}\mid\mathcal F_t)\) и проверить, насколько современные
+глубокие модели (TFT, DeepAR, NF, Diffusion, GNN) превосходят
+базовый подход «Васичек + EWMA».  
+Долгосрочная цель — Neural SDE / Neural PDE: обучить
+дифференциальное уравнение, объясняющее «длинную память» RUONIA.
+
+\section{Research Questions and Objectives}
+
+\begin{enumerate}
+  \item \textbf{RQ1}: Улучшают ли TFT, DeepAR, Normalizing Flows и
+        Diffusion-TimeGrad качество \emph{полного} прогноза
+        (CRPS, Energy, Pinball) на горизонтах
+        \(h \in \{1,7,30,180,365\}\)
+        по сравнению с базовой связкой «Васичек + EWMA»?
+  \item \textbf{RQ2}: Снижают ли продвинутые модели волатильности
+        (GARCH-GJR, GAS, EGARCH, Bayesian SV) частоту нарушений
+        99 \% VaR и Expected Shortfall
+        относительно фильтра EWMA (\(\lambda=0.94\))?
+  \item \textbf{RQ3}\emph{(*)} : Может ли \emph{совместное} генеративное решение
+        — Conditional NF или Neural SDE — предоставить согласованную
+        многогоризонтную плотность \(\{r_{t+h}\}_{h}\) и тем самым
+        улучшить back-тест ES? \footnote{ 
+        Эта задача рассматривается как «задача со звёздочкой»:
+        её планируется детально развернуть уже в рамках магистерского
+        тезиса, после отработки основной части моделирования.}
+\end{enumerate}
+
+Наша цель — получить устойчивое распределение
+\(P(r_{t+h}\mid\mathcal F_t)\) для
+\(h \in \{1,7,30,180,365\}\) и тем самым закрыть пробел между
+«точечным» прогнозом ставки и реальными требованиями риск-менеджмента.
+
+
+\section{Methodology}
+
+\subsection{Probabilistic Sequence Models}
+
+\begin{itemize}
+  \item \textbf{Baseline (ARIMA + Vasicek + EWMA).}  ARIMA$(p,d,q)$
+        обеспечивает минимально-адекватную авто-коррекционную структуру;
+        Васичек даёт экономически интерпретируемый
+        параметр $\kappa$; EWMA($\lambda{=}0.94$) – промышленный
+        стандарт Банка России, поэтому служит референсом.
+  \item \textbf{DeepAR / DeepState.} (Student-$t$, NB) обучается end-to-end на
+        \emph{условной} плотности $\!P(r_{t+1}\mid\mathcal F_t)$,
+        хорошо работает на нестационарных рядовых потоках
+        \autocite{salinas2020deepar}.
+  \item \textbf{Temporal Fusion Transformer (TFT).}  Комбинирует
+        attention + гating; quantile-loss $L_\tau$ сразу выдаёт набор
+        доверительных интервалов, а MC-dropout калибрует 
+        неопределённость \autocite{lim2024tft,vaswani2024transformers}.
+  \item \textbf{Normalizing Flows (MAF / NSF).}  Обратимо
+        трансформируют сложную плотность в $\mathcal N(0,1)$,
+        позволяя моделировать асимметрию и тяжёлые хвосты
+        \autocite{rasouli2023flows}.
+  \item \textbf{Diffusion (TimeGrad).}  Обучаем «шум $\rightarrow$ ряд»,
+        получаем мульти-шаговые сценарии без ошибки накопления
+        \autocite{zangeneh2024diffusion}.
+  \item \textbf{LLM + Time-mix.}  ФРС, макро-факторы и
+        исторический ряд объединяются в единую эмбеддинг-матрицу,
+        что улучшает tails / ES прогноза
+        \autocite{gao2024fedspeak,chang2024forecasting}.
+\end{itemize}
+
+\subsection{Volatility \& Density Models}
+
+\begin{itemize}
+  \item \textbf{GARCH / EGARCH / GJR.}  Захватывают
+        кластеризацию волатильности; сравниваем Normal и $t$-шоки.
+  \item \textbf{GAS (Generalised AR Score).}  Обновляет
+        $\sigma_{t}^{2}$ градиентом log-likelihood, поэтому быстрее реагирует
+        на рыночные шоки \autocite{creal2013gas}.
+  \item \textbf{Bayesian SV.}  MCMC NUTS даёт постериор на
+        $\sigma_t$, что нужно для full-Bayes ES / VaR
+        \autocite{alvarez2024bayesian}.
+\end{itemize}
+
+\subsection{Evaluation}
+
+\begin{itemize}
+  \item \textit{Point}: \textbf{MAE, RMSE} – привычные банковские KPI
+        для одной цифры.
+  \item \textit{Distribution}: \textbf{CRPS} (калибровка всей CDF),
+        \textbf{Pinball Loss} (проверка квантилей 5 \% / 95 \%),
+        \textbf{Energy Score} – многомерная общая мера для сценариев.
+  \item \textit{Risk}: \textbf{VaR$_{99}$, ES$_{97.5}$} +
+        Купиц, Кристофферсен – регуляторные back-тесты (Базель IV).
+  \item \textit{Forecast comparison}: \textbf{Diebold–Mariano (QLIKE)}
+        и \textbf{Giacomini–White CPA} – формальная проверка,
+        «статистически ли» новая модель лучше Васичека.
+\end{itemize}

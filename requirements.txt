@@ -1,0 +1,13 @@
+pandas>=2.1
+polars
+requests
+pyarrow
+openpyxl
+xlrd
+jupyterlab
+scipy
+pandas_market_calendars
+tqdm
+pre-commit
+lxml
+nasdaq-data-link
