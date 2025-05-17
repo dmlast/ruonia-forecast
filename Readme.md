@@ -2,7 +2,7 @@
 
 **Статус (17 мая 2025):**
 
-* Собраны все данные (RUONIA, ключевая ставка, FX-курсы, MOEX, ZCYC)
+* Собраны все данные (RUONIA, FX-курсы, MOEX, ZCYC)
 * Написаны модульные «fetcher’ы» для каждой серии и скрипт `merged_data.py`
 * Подготовлен Research Proposal (`main.pdf` с литературой и планом)
 * Проведён первичный EDA в ноутбуке `notebooks/00_eda.ipynb`
@@ -48,7 +48,7 @@ notebooks/00_eda.ipynb
 |           Дата | Этап       | Ключевые deliverables                                                                      |
 | -------------: | :--------- | :----------------------------------------------------------------------------------------- |
 |     **17 мая** | **W0**     | ✓ Сбор данных (RUONIA, макро, рынки)  ✓  Первичный EDA-ноутбук (статистика, графики)       |
-|  **18–24 мая** | **W1**     | Обзор литературы и Baseline: ARIMA, Васичек, EWMA; расчёт MAE/RMSE для h={1,7,30}          |
+|  **18–24 мая** | **W1**     | Обзор литературы, дополнительные данные и Baseline: ARIMA, Васичек, EWMA; расчёт MAE/RMSE для h={1,7,30}          |
 |  **25–31 мая** | **W2**     | DeepAR & TFT (1-шаговый forecast), валидация CRPS/Pinball, первый сравнительный график     |
 |   **1–7 июня** | **W3**     | Normalizing Flows (MAF/NSF) + Diffusion TimeGrad; multi-horizon density, Energy Score      |
 |  **8–14 июня** | **W4**     | Volatility block: GARCH-GJR, GAS, Bayesian SV; VaR₉₉/ES₉₇.₅ back-test, Купиц/Кристофферсен |
