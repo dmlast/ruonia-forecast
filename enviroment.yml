@@ -16,3 +16,4 @@ dependencies:
   - pre-commit
   - lxml
   - nasdaq-data-link
+  - arch-py  

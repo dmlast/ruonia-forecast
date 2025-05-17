@@ -11,3 +11,4 @@ tqdm
 pre-commit
 lxml
 nasdaq-data-link
+arch
