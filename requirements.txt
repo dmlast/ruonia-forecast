@@ -1,14 +1,8 @@
-pandas>=2.1
-polars
-requests
-pyarrow
-openpyxl
-xlrd
-jupyterlab
-scipy
-pandas_market_calendars
-tqdm
-pre-commit
-lxml
-nasdaq-data-link
-arch
+python>=3.10     
+pandas>=2.2
+pyarrow>=15.0         # parquet read/write   (pandas engine="pyarrow")
+requests>=2.31
+urllib3>=2.2          # retry‐strategy utils
+python-holidays>=0.25
+openpyxl>=3.1         # чтение XLSX из ROISfix
+lxml>=5.1            
