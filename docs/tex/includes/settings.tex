@@ -4,23 +4,20 @@
   \newfontfamily\russianfont{Times New Roman}
 \setmonofont{Menlo}             
 \newfontfamily\cyrillicfonttt{Menlo} 
-\usepackage{polyglossia}
-\setdefaultlanguage{russian}
-\setotherlanguage{english, russian}
+
+\usepackage[russian,english]{babel}
 \usepackage{setspace} 
 \onehalfspacing 
 \usepackage{graphicx,amsmath,amssymb,booktabs, bm}
 \usepackage{minted}
 \usepackage[hidelinks]{hyperref}
-\usepackage[
-  backend=biber,
-  style=numeric-comp,  
-  sorting=none,         
-  maxnames=2,           
-  isbn=false
-]{biblatex}
+\usepackage[backend=biber,style=numeric,sorting=none]{biblatex}
 \addbibresource{/Users/dmlast/Documents/Projects/ruonia-forecast/docs/bib/references.bib}
 \renewcommand*{\bibfont}{\small}
 \usepackage{siunitx}
 \usepackage{ragged2e}
+\usepackage{booktabs}
 \usepackage{pdflscape}
+\usepackage{tabularx}      % авто-растягиваемые колонки X
+\usepackage{array}         % >{\centering\arraybackslash}
+\usepackage{csquotes}

@@ -1,30 +1,64 @@
-\section\*{Приложение 1. Метаданные публикации и применения данных}
+\section*{Приложение 1. Метаданные публикации и применения данных}
 \addcontentsline{toc}{section}{Приложение 1. Метаданные публикации и применения данных}
 
-\begin{landscape}
-\begin{table}\[ht!]
+\begin{table}[htbp]
 \centering
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.15}
 \caption{Время публикации и лаг применения ключевых источников данных}
-\label{tab\:data-metadata}
-\begin{tabular}{@{} l l c c l l @{} }
-\toprule
-\textbf{Источник} & \textbf{Что тянем} & \textbf{Публикация} & \textbf{Лаг} & \textbf{Применение} & \textbf{Календарь} \\
-\midrule
-\texttt{get\_ruonia}                  & RUONIA (overnight rate)       & \textasciitilde18:30~~UTC+3\cite{nfa\_reglament} & +1~~day  & DATE+1~~day     & RUONIA-календарь\cite{nfa\_calendar}    \\
-\texttt{get\_roisfix}                 & OIS‑фиксы (swap curve)        & \textasciitilde19:00~~UTC+3\cite{nfa\_reglament} & 0       & DATE           & RUONIA-календарь\cite{nfa\_calendar}    \\
-\texttt{get\_usd\_rub, get\_eur\_rub, get\_cny\_rub} & Курс ЦБ РФ               & \textasciitilde15:30~~UTC+3\cite{cbr\_fx\_letter} & +1~~day  & DATE+1~~day     & Банковские дни ЦБ РФ\cite{cbr\_calendar} \\
-\texttt{get\_moex\_index}             & IMOEX (index close)           & \textasciitilde18:50~~UTC+3\cite{moex\_post\_trade} & 0       & DATE           & Биржевой календарь MOEX\cite{moex\_calendar} \\
-\texttt{get\_combined\_zcyc\_data}   & OFZ zero-curve yields         & \textasciitilde19:15\~UTC+3\cite{moex\_post\_trade} & 0       & DATE           & Биржевой календарь MOEX\cite{moex\_calendar} \\
-\bottomrule
-\end{tabular}
+\label{tab:data-metadata}
 
-\medskip
-\textbf{Примечания}
-\begin{itemize}
-\item Регламенты публикации данных: \cite{nfa\_reglament}, \cite{cbr\_fx\_letter}, \cite{moex\_post\_trade}.
-\item Календарь публикаций и применений: \cite{nfa\_calendar}, \cite{cbr\_calendar}, \cite{moex\_calendar}.
-\end{itemize}
+\begin{tabularx}{\linewidth}{@{}
+  >{\raggedright\arraybackslash}X        % Показатель
+  >{\centering\arraybackslash}p{1.9cm}   % Публикация
+  >{\centering\arraybackslash}p{0.9cm}   % Лаг
+  >{\centering\arraybackslash}p{1.5cm}   % Применение
+  >{\raggedright\arraybackslash}X@{} }    % Календарь
+\toprule
+\multicolumn{1}{c}{\textbf{Показатель}} &
+\multicolumn{1}{c}{\textbf{Публикация}} &
+\multicolumn{1}{c}{\textbf{Лаг}} &
+\multicolumn{1}{c}{\textbf{Применение}} &
+\multicolumn{1}{c}{\textbf{Календарь}} \\
+\midrule
+RUONIA (overnight) & 
+  \textasciitilde 18:30\,(UTC+3)\footnotemark[1] & 
+  +1  & DATE+1 & RUONIA (NFA)\footnotemark[2] \\
+
+OIS-фиксы (swap curve) & 
+  \textasciitilde 19:00\,(UTC+3)\footnotemark[1] & 
+  0   & DATE   & RUONIA (NFA)\footnotemark[2] \\
+
+Курсы ЦБ РФ & 
+  \textasciitilde 15:30\,(UTC+3)\footnotemark[3] & 
+  +1  & DATE+1 & Банковские дни ЦБ РФ\footnotemark[4] \\
+
+IMOEX close & 
+  \textasciitilde 18:50\,(UTC+3)\footnotemark[5] & 
+  0   & DATE   & Биржевой календарь MOEX\footnotemark[6] \\
+
+OFZ zero-curve yields & 
+  \textasciitilde 19:15\,(UTC+3)\footnotemark[5] & 
+  0   & DATE   & Биржевой календарь MOEX\footnotemark[6] \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.6em}
+\footnotesize
+\textbf{Примечания.} Символ `\textasciitilde` обозначает приблизительное время публикации (UTC+3).  
+Лаг «+1» означает, что значение, опубликованное в T, становится применимым с начала дня T\,+1.
+
+\footnotetext[1]{Регламент публикации ставок RUONIA и ROISfix \cite{nfa_reglament}.}
+\footnotetext[2]{Календарь публикаций RUONIA \cite{nfa_calendar}.}
+\footnotetext[3]{Информационное письмо Банка России о курсах валют \cite{cbr_fx_letter}.}
+\footnotetext[4]{Календарь банковских выходных ЦБ РФ \cite{cbr_calendar}.}
+\footnotetext[5]{Post-trade отчёты MOEX \cite{moex_post_trade}.}
+\footnotetext[6]{Торговый календарь MOEX \cite{moex_calendar}.}
 \end{table}
-\end{landscape}
+
+
+
+
 
 
