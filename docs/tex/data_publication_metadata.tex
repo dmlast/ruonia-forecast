@@ -1,0 +1,30 @@
+\section\*{Приложение 1. Метаданные публикации и применения данных}
+\addcontentsline{toc}{section}{Приложение 1. Метаданные публикации и применения данных}
+
+\begin{landscape}
+\begin{table}\[ht!]
+\centering
+\caption{Время публикации и лаг применения ключевых источников данных}
+\label{tab\:data-metadata}
+\begin{tabular}{@{} l l c c l l @{} }
+\toprule
+\textbf{Источник} & \textbf{Что тянем} & \textbf{Публикация} & \textbf{Лаг} & \textbf{Применение} & \textbf{Календарь} \\
+\midrule
+\texttt{get\_ruonia}                  & RUONIA (overnight rate)       & \textasciitilde18:30~~UTC+3\cite{nfa\_reglament} & +1~~day  & DATE+1~~day     & RUONIA-календарь\cite{nfa\_calendar}    \\
+\texttt{get\_roisfix}                 & OIS‑фиксы (swap curve)        & \textasciitilde19:00~~UTC+3\cite{nfa\_reglament} & 0       & DATE           & RUONIA-календарь\cite{nfa\_calendar}    \\
+\texttt{get\_usd\_rub, get\_eur\_rub, get\_cny\_rub} & Курс ЦБ РФ               & \textasciitilde15:30~~UTC+3\cite{cbr\_fx\_letter} & +1~~day  & DATE+1~~day     & Банковские дни ЦБ РФ\cite{cbr\_calendar} \\
+\texttt{get\_moex\_index}             & IMOEX (index close)           & \textasciitilde18:50~~UTC+3\cite{moex\_post\_trade} & 0       & DATE           & Биржевой календарь MOEX\cite{moex\_calendar} \\
+\texttt{get\_combined\_zcyc\_data}   & OFZ zero-curve yields         & \textasciitilde19:15\~UTC+3\cite{moex\_post\_trade} & 0       & DATE           & Биржевой календарь MOEX\cite{moex\_calendar} \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\textbf{Примечания}
+\begin{itemize}
+\item Регламенты публикации данных: \cite{nfa\_reglament}, \cite{cbr\_fx\_letter}, \cite{moex\_post\_trade}.
+\item Календарь публикаций и применений: \cite{nfa\_calendar}, \cite{cbr\_calendar}, \cite{moex\_calendar}.
+\end{itemize}
+\end{table}
+\end{landscape}
+
+
