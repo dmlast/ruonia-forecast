@@ -32,6 +32,13 @@ def get_roisfix(
     r = requests.get(ARCHIVE_URL, params=params, timeout=30)
     r.raise_for_status()
 
+    try:
+        df = pd.read_excel(io.BytesIO(r.content), sheet_name=0, header=1)
+    except ValueError:          # пустой/неправильный файл
+        return pd.DataFrame()   # → part.empty -> записываем stub
+
+    r.raise_for_status()
+
     df = pd.read_excel(io.BytesIO(r.content), sheet_name=0, header=1)
 
     rename = {"Дата ставки": "DATE"}

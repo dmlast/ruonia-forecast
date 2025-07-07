@@ -55,11 +55,19 @@ MOEX_HOLIDAYS = RUONIA_HOLIDAYS.difference(
 )
 MOEX_BDAY = CustomBusinessDay(holidays=MOEX_HOLIDAYS)
 
+from datetime import timedelta
+import pandas as pd
+from pandas.tseries.offsets import CustomBusinessDay
+
+
 def apply_lag(series: pd.Series, lag_days: int, bday: CustomBusinessDay) -> pd.Series:
     """
     Сдвигает дату на `lag_days` и округляет вперёд до ближайшего рабочего дня
-    указанного календаря (CustomBusinessDay). Возвращает строку YYYY-MM-DD.
+    указанного календаря (CustomBusinessDay). Возвращает строки YYYY-MM-DD.
     """
     shifted = pd.to_datetime(series) + timedelta(days=lag_days)
-    corrected = shifted.apply(lambda d: d if d in bday else bday.rollforward(d))
+    # Проверяем is_on_offset, иначе делаем rollforward
+    corrected = shifted.apply(
+        lambda d: d if bday.is_on_offset(d) else bday.rollforward(d)
+    )
     return corrected.dt.strftime("%Y-%m-%d")
