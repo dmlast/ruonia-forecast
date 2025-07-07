@@ -483,3 +483,8 @@ poetry.toml
 pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/latex,python
+.DS_Store
+.DS_Store
+data/.DS_Store
+docs/tex/main.bcf-SAVE-ERROR
+sde_pipeline.png
